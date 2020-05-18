@@ -9,26 +9,26 @@ INSERT INTO "user" ("id", "username", "name", "password")
 VALUES
   (
     1,
-    'admin',
-    'Dunder Mifflin Admin',
+    'ian',
+    'IanDrews',
     -- password = "pass"
     '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG'
   );
 
 INSERT INTO "language" ("id", "name", "user_id")
 VALUES
-  (1, 'French', 1);
+  (1, 'Afrikaans', 1);
 
 INSERT INTO "word" ("id", "language_id", "original", "translation", "next")
 VALUES
-  (1, 1, 'entraine toi', 'practice', 2),
-  (2, 1, 'bonjour', 'hello', 3),
-  (3, 1, 'maison', 'house', 4),
-  (4, 1, 'développeur', 'developer', 5),
-  (5, 1, 'traduire', 'translate', 6),
-  (6, 1, 'incroyable', 'amazing', 7),
-  (7, 1, 'chien', 'dog', 8),
-  (8, 1, 'chat', 'cat', null);
+  (1, 1, 'oefen', 'practice', 2),
+  (2, 1, 'goeie more', 'good morning', 3),
+  (3, 1, 'huis', 'house', 4),
+  (4, 1, 'ontwikkelaar', 'developer', 5),
+  (5, 1, 'vertaal', 'translate', 6),
+  (6, 1, 'ongelooflik', 'incredible', 7),
+  (7, 1, 'hond', 'dog', 8),
+  (8, 1, 'kat', 'cat', null);
 
 UPDATE "language" SET head = 1 WHERE id = 1;
 
