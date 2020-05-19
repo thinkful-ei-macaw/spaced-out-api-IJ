@@ -1,14 +1,14 @@
-const express = require("express");
-const LanguageService = require("./language-service");
-const { requireAuth } = require("../middleware/jwt-auth");
+const express = require('express');
+const LanguageService = require('./language-service');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 const languageRouter = express.Router();
 
 languageRouter.use(requireAuth).use(async (req, res, next) => {
   try {
     const language = await LanguageService.getUsersLanguage(
-      req.app.get("db"),
-      req.user.id
+      req.app.get('db'),
+      req.user.id,
     );
 
     if (!language)
@@ -23,11 +23,11 @@ languageRouter.use(requireAuth).use(async (req, res, next) => {
   }
 });
 
-languageRouter.get("/", async (req, res, next) => {
+languageRouter.get('/', async (req, res, next) => {
   try {
     const words = await LanguageService.getLanguageWords(
-      req.app.get("db"),
-      req.language.id
+      req.app.get('db'),
+      req.language.id,
     );
 
     res.json({
@@ -40,12 +40,12 @@ languageRouter.get("/", async (req, res, next) => {
   }
 });
 
-languageRouter.get("/head", async (req, res, next) => {
+languageRouter.get('/head', async (req, res, next) => {
   let headWordId = req.language.head;
   let totalScore = req.language.total_score;
   let nextWord;
   try {
-    nextWord = await LanguageService.getNextWord(req.app.get("db"), headWordId);
+    nextWord = await LanguageService.getNextWord(req.app.get('db'), headWordId);
   } catch (error) {
     next(error);
   }
@@ -57,15 +57,13 @@ languageRouter.get("/head", async (req, res, next) => {
   });
 });
 
-languageRouter.post("/guess", async (req, res, next) => {
+languageRouter.post('/guess', async (req, res, next) => {
   let guess = req.guess;
   let headWordId = req.language.head;
   let wordList;
 
-
-
   try {
-    headWord = await LanguageService.getWord(req.app.get("db"), headWordId);
+    headWord = await LanguageService.getWord(req.app.get('db'), headWordId);
   } catch (error) {
     next(error);
   }
@@ -82,13 +80,16 @@ languageRouter.post("/guess", async (req, res, next) => {
     try {
       await LanguageService.updateWord(req.app.get('db'), headWord.id, {
         ...headWord,
-        memory_value: (headWord.memory_value * 2),
-        correct_count: ++headWord.correct_count
-      })
+        memory_value: headWord.memory_value * 2,
+        correct_count: ++headWord.correct_count,
+      });
 
-      await LanguageService.updateLanguageScore(req.app.get('db'), req.user.id, ++language.total_score)
-
-    } catch(e) {
+      await LanguageService.updateLanguageScore(
+        req.app.get('db'),
+        req.user.id,
+        ++language.total_score,
+      );
+    } catch (e) {
       next(e);
     }
     res.send({
@@ -96,14 +97,13 @@ languageRouter.post("/guess", async (req, res, next) => {
       isCorrect: true,
     });
   } else if (guess !== headword.original) {
-
     try {
       await LanguageService.updateWord({
         ...headWord,
         memory_value: 1,
-        incorrect_count: ++headWord.incorrect_count 
-      })
-    } catch(e) {
+        incorrect_count: ++headWord.incorrect_count,
+      });
+    } catch (e) {
       next(e);
     }
 
@@ -113,8 +113,11 @@ languageRouter.post("/guess", async (req, res, next) => {
     });
   }
   try {
-    wordList = await LanguageService.populateList(req.app.get('db'), headWordId);
-  } catch(e) {
+    wordList = await LanguageService.populateList(
+      req.app.get('db'),
+      headWordId,
+    );
+  } catch (e) {
     next(e);
   }
 });
