@@ -105,7 +105,7 @@ languageRouter.post('/guess', bodyParser, async (req, res, next) => {
       headWordId,
     );
 
-    wordList.moveHeadTo(headWord.memory_value);
+    wordList.moveHeadTo(newMemoryValue);
     await LanguageService.updateWords(req.app.get('db'), wordList, req.user.id);
     const nextWord = wordList.head.value;
     return res.status(200).json({

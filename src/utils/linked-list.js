@@ -75,7 +75,8 @@ class LinkedList {
   }
 
   moveHeadTo(m) {
-    let i = 0;
+    console.log(m);
+    let i = 1;
     let oldHead = this.head;
     this.head = this.head.next;
     let temp = this.head;
