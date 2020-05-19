@@ -73,6 +73,19 @@ class LinkedList {
     // }
     previousNode.next = new _Node(item, currNode);
   }
+
+  moveHeadTo(m) {
+    let i = 0;
+    let oldHead = this.head;
+    this.head = this.head.next;
+    let temp = this.head;
+    while (i < m && temp.next !== null) {
+      temp = temp.next;
+    }
+    oldHead.next = temp.next;
+    temp.next = oldHead;
+  }
+
   find(item) {
     let currNode = this.head;
     if (!this.head) {
@@ -103,7 +116,7 @@ class LinkedList {
       currNode = currNode.next;
     }
     if (currNode === null) {
-      console.log("Item not found");
+      console.log('Item not found');
       return;
     }
     previousNode.next = currNode.next;
@@ -111,7 +124,7 @@ class LinkedList {
 }
 function display(list) {
   if (list.head === null) {
-    throw new Error("List is empty or does not");
+    throw new Error('List is empty or does not');
   }
 
   let currNode = list.head;
@@ -124,7 +137,7 @@ function display(list) {
 
 function size(list) {
   if (list.head === null) {
-    console.log("size 0");
+    console.log('size 0');
   }
 
   let currNode = list.head;
@@ -139,10 +152,10 @@ function size(list) {
 
 function isEmpty(list) {
   if (list.head === null) {
-    console.log("List is empty");
+    console.log('List is empty');
     return true;
   } else {
-    console.log("list is not empty");
+    console.log('list is not empty');
     return false;
   }
 }
@@ -159,7 +172,7 @@ function findPrevious(list, key) {
     previousNode = currNode;
     currNode = currNode.next;
   }
-  console.log("findPrevious result", previousNode.value);
+  console.log('findPrevious result', previousNode.value);
   return previousNode.value;
 }
 
@@ -175,7 +188,7 @@ function findLast(list) {
     previousNode = currNode;
     currNode = currNode.next;
   }
-  console.log("last node is", previousNode);
+  console.log('last node is', previousNode);
   return previousNode;
 }
 
@@ -198,7 +211,7 @@ function reverse(list) {
 
   curr.next = previous;
 
-  console.log("reverse list is", list);
+  console.log('reverse list is', list);
 }
 
 function reverseDouble(list) {
@@ -220,7 +233,7 @@ function reverseDouble(list) {
   curr.previous = nextNode;
   curr.next = previous;
 
-  console.log("reverse list is", list);
+  console.log('reverse list is', list);
 }
 
 function third(list) {
@@ -257,7 +270,7 @@ function findMiddle(list) {
     previousNode = currNode;
     currNode = currNode.next;
   }
-  console.log("MIDDLE IS", currNode.value);
+  console.log('MIDDLE IS', currNode.value);
   return currNode;
 }
 
@@ -279,4 +292,4 @@ function cycle(list) {
   return ret;
 }
 
-module.exports = {LinkedList, display};
+module.exports = { LinkedList, display };

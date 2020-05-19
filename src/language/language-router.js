@@ -1,7 +1,7 @@
 const express = require('express');
 const LanguageService = require('./language-service');
 const { requireAuth } = require('../middleware/jwt-auth');
-
+const { display } = require('../utils/linked-list');
 const languageRouter = express.Router();
 
 languageRouter.use(requireAuth).use(async (req, res, next) => {
@@ -96,6 +96,7 @@ languageRouter.post('/guess', async (req, res, next) => {
       ...resBody,
       isCorrect: true,
     });
+    headWord.memory_value = headWord.memory_value * 2;
   } else if (guess !== headword.original) {
     try {
       await LanguageService.updateWord({
@@ -111,6 +112,7 @@ languageRouter.post('/guess', async (req, res, next) => {
       ...resBody,
       isCorrect: false,
     });
+    headWord.memory_value = 1;
   }
   // Populating linked list. Now must be sorted with new memory value of head.
   try {
@@ -121,6 +123,8 @@ languageRouter.post('/guess', async (req, res, next) => {
   } catch (e) {
     next(e);
   }
+  wordlist.moveHeadTo(headWord.memory_value);
+  display(wordList);
 });
 
 module.exports = languageRouter;
