@@ -81,6 +81,7 @@ class LinkedList {
     let temp = this.head;
     while (i < m && temp.next !== null) {
       temp = temp.next;
+      i++;
     }
     oldHead.next = temp.next;
     temp.next = oldHead;
