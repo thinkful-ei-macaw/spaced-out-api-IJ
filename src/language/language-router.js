@@ -60,8 +60,12 @@ languageRouter.get("/head", async (req, res, next) => {
 languageRouter.post("/guess", async (req, res, next) => {
   let guess = req.guess;
   let headWordId = req.language.head;
+  let wordList;
+
+
+
   try {
-    headWord = await LanguageService.getNextWord(req.app.get("db"), headWordId);
+    headWord = await LanguageService.getWord(req.app.get("db"), headWordId);
   } catch (error) {
     next(error);
   }
@@ -74,16 +78,44 @@ languageRouter.post("/guess", async (req, res, next) => {
   };
   if (!req.guess) {
     res.status(400, "Missing 'guess' in request body");
-  } else if (guess === headWord.origional) {
+  } else if (guess === headWord.original) {
+    try {
+      await LanguageService.updateWord(req.app.get('db'), headWord.id, {
+        ...headWord,
+        memory_value: (headWord.memory_value * 2),
+        correct_count: ++headWord.correct_count
+      })
+
+      await LanguageService.updateLanguageScore(req.app.get('db'), req.user.id, ++language.total_score)
+
+    } catch(e) {
+      next(e);
+    }
     res.send({
       ...resBody,
       isCorrect: true,
     });
-  } else if (guess !== headword.origional) {
+  } else if (guess !== headword.original) {
+
+    try {
+      await LanguageService.updateWord({
+        ...headWord,
+        memory_value: 1,
+        incorrect_count: ++headWord.incorrect_count 
+      })
+    } catch(e) {
+      next(e);
+    }
+
     res.send({
       ...resBody,
       isCorrect: false,
     });
+  }
+  try {
+    wordList = await LanguageService.populateList(req.app.get('db'), headWordId);
+  } catch(e) {
+    next(e);
   }
 });
 

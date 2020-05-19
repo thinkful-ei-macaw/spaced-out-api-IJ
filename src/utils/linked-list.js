@@ -5,7 +5,7 @@ class _Node {
   }
 }
 
-export default class LinkedList {
+class LinkedList {
   constructor() {
     this.head = null;
   }
@@ -278,3 +278,5 @@ function cycle(list) {
   console.log(ret);
   return ret;
 }
+
+module.exports = {LinkedList, display};
