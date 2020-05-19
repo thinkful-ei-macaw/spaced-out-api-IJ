@@ -88,10 +88,3 @@ languageRouter.post("/guess", async (req, res, next) => {
 });
 
 module.exports = languageRouter;
-
-// nextWord: testLanguagesWords[0].original,
-//     totalScore: 0,
-//     wordCorrectCount: 0,
-//     wordIncorrectCount: 1,
-//     guess: testLanguagesWords[1].translation,
-//     isCorrect: false
