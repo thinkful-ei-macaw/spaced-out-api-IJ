@@ -40,7 +40,7 @@ const LanguageService = {
       .where({ id })
       .first();
   },
-  populatList(db, id) {
+  populateList(db, id) {
     let word = this.getNextWord(db, id);
     const list = new LinkedList();
     let id = word.id;
