@@ -70,8 +70,7 @@ languageRouter.post('/guess', bodyParser, async (req, res, next) => {
     if (!req.guess) {
       res.status(400, "Missing 'guess' in request body");
     }
-
-    if (guess === headWord.original) {
+    if (guess === headWord.translation) {
       newMemoryValue = headWord.memory_value * 2;
       await LanguageService.updateWord(req.app.get('db'), headWord.id, {
         ...headWord,
@@ -82,13 +81,13 @@ languageRouter.post('/guess', bodyParser, async (req, res, next) => {
       await LanguageService.updateLanguageScore(
         req.app.get('db'),
         req.user.id,
-        ++language.total_score,
+        ++req.language.total_score,
       );
     }
 
-    if (guess !== headWord.original) {
+    if (guess !== headWord.translation) {
       newMemoryValue = 1;
-      await LanguageService.updateWord({
+      await LanguageService.updateWord(req.app.get('db'), headWord.id, {
         ...headWord,
         memory_value: newMemoryValue,
         incorrect_count: ++headWord.incorrect_count,
@@ -102,6 +101,7 @@ languageRouter.post('/guess', bodyParser, async (req, res, next) => {
     );
 
     wordList.moveHeadTo(headWord.memory_value);
+    await LanguageService.updateWords(req.app.get('db'), wordList, req.user.id);
     display(wordList);
   } catch (e) {
     next(e);

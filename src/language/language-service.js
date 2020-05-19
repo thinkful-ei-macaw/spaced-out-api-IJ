@@ -51,11 +51,12 @@ const LanguageService = {
   },
   updateWord(db, id, fields) {
     if (id === null) {
-      return db
-        .from('word')
-        .where({ id })
-        .update({ ...fields });
+      return;
     }
+    return db
+      .from('word')
+      .where({ id })
+      .update({ ...fields });
   },
   async populateList(db, headId) {
     let word;
@@ -76,6 +77,26 @@ const LanguageService = {
       }
     }
     return list;
+  },
+  updateWords(db, list, user_id) {
+    return db.transaction(async (trx) => {
+      let current = list.head;
+
+      await trx
+        .into('language')
+        .where({ user_id })
+        .update({ head: current.value.id });
+
+      while (current !== null) {
+        await trx
+          .into('word')
+          .where({ id: current.value.id })
+          .update({
+            next: current.next !== null ? current.next.value.id : null,
+          });
+        current = current.next;
+      }
+    });
   },
 };
 
