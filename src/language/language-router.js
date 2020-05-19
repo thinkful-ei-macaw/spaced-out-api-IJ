@@ -59,10 +59,14 @@ languageRouter.get('/head', async (req, res, next) => {
 });
 
 languageRouter.post('/guess', bodyParser, async (req, res, next) => {
-  let guess = req.body.guess.trim().toLowerCase();
+  let guess = req.body.guess ? req.body.guess.trim().toLowerCase() : '';
   let headWordId = req.language.head;
   let wordList;
   let newMemoryValue;
+
+  if (!req.body.guess) {
+    return res.status(400).json({ error: "Missing 'guess' in request body" });
+  }
 
   try {
     headWord = await LanguageService.getWord(req.app.get('db'), headWordId);
@@ -70,9 +74,6 @@ languageRouter.post('/guess', bodyParser, async (req, res, next) => {
     let incorrectCount = headWord.incorrect_count;
     let totalScore = req.language.total_score;
     let isCorrect = false;
-    if (!req.guess) {
-      res.status(400, "Missing 'guess' in request body");
-    }
     if (guess === headWord.translation) {
       newMemoryValue = headWord.memory_value * 2;
       isCorrect = true;
@@ -106,12 +107,12 @@ languageRouter.post('/guess', bodyParser, async (req, res, next) => {
 
     wordList.moveHeadTo(headWord.memory_value);
     await LanguageService.updateWords(req.app.get('db'), wordList, req.user.id);
-
-    return res.status(201).json({
-      nextWord: headWord.original,
+    const nextWord = wordList.head.value;
+    return res.status(200).json({
+      nextWord: nextWord.original,
       totalScore: totalScore,
-      wordCorrectCount: correctCount,
-      wordIncorrectCount: incorrectCount,
+      wordCorrectCount: nextWord.correct_count,
+      wordIncorrectCount: nextWord.incorrect_count,
       answer: headWord.translation,
       isCorrect: isCorrect,
     });
