@@ -58,7 +58,7 @@ languageRouter.get('/head', async (req, res, next) => {
 });
 
 languageRouter.post('/guess', async (req, res, next) => {
-  let guess = req.guess;
+  let guess = req.guess.trim().toLowerCase();
   let headWordId = req.language.head;
   let wordList;
 
@@ -112,6 +112,7 @@ languageRouter.post('/guess', async (req, res, next) => {
       isCorrect: false,
     });
   }
+  // Populating linked list. Now must be sorted with new memory value of head.
   try {
     wordList = await LanguageService.populateList(
       req.app.get('db'),
